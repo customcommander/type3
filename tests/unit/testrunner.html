@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="http://yui.yahooapis.com/3.17.2/build/yui/yui-min.js"></script>
+    </head>
+    <body>
+        <script>
+            YUI({
+                modules: {
+                    'type3': {
+                        fullpath: '../../src/js/type3.js'
+                    },
+                    'type3-tests': {
+                        fullpath: 'js/type3-tests.js',
+                        requires: ['test', 'type3']
+                    }
+                }
+            }).use('type3-tests', function (Y) {
+                Y.Test.Runner.run();
+            });
+        </script>
+    </body>
+</html>
