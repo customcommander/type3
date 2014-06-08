@@ -11,6 +11,16 @@ suite.add(new Y.Test.Case({
     }
 }));
 
+suite.add(new Y.Test.Case({
+
+    name: 'creating an instance',
+
+    'creating an instance': function () {
+        Y.Assert.isInstanceOf(type3, type3()    , 'a function call should return an instance of type3');
+        Y.Assert.isInstanceOf(type3, new type3(), 'a constructor call should return an instance of type3');
+    }
+}));
+
 Y.Test.Runner.add(suite);
 
 });
