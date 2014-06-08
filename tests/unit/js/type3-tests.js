@@ -16,8 +16,27 @@ suite.add(new Y.Test.Case({
     name: 'creating an instance',
 
     'creating an instance': function () {
-        Y.Assert.isInstanceOf(type3, type3()    , 'a function call should return an instance of type3');
-        Y.Assert.isInstanceOf(type3, new type3(), 'a constructor call should return an instance of type3');
+        Y.Assert.isInstanceOf(type3, type3('foo')    , 'a function call should return an instance of type3');
+        Y.Assert.isInstanceOf(type3, new type3('foo'), 'a constructor call should return an instance of type3');
+    },
+
+    'type3(text) - should throw an error if text is not a string': function () {
+
+        function assert_it_throws(thing) {
+
+            var msg = Y.Lang.sub('expected failure because text is a "{type}"', {
+                type: Object.prototype.toString.call(thing)
+            });
+
+            Y.Assert.throwsError(TypeError, function () {
+                type3(thing);
+            }, msg);
+        }
+
+        assert_it_throws(99);
+        assert_it_throws([]);
+        assert_it_throws({});
+        assert_it_throws(null);
     }
 }));
 
