@@ -13,6 +13,8 @@ function type3(text) {
 
     if (typeof text !== 'string') {
         throw new TypeError('type3: text is not a string');
+    } else if (!text) {
+        throw new TypeError('type3: text is empty');
     }
 }
 

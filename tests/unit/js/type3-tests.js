@@ -37,6 +37,12 @@ suite.add(new Y.Test.Case({
         assert_it_throws([]);
         assert_it_throws({});
         assert_it_throws(null);
+    },
+
+    'type3(text) - should throw an error if text is empty': function () {
+        Y.Assert.throwsError(TypeError, function () {
+            type3('');
+        }, 'expected failure because text is an empty string ("")');
     }
 }));
 
