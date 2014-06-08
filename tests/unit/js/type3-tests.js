@@ -46,6 +46,26 @@ suite.add(new Y.Test.Case({
     }
 }));
 
+suite.add(new Y.Test.Case({
+
+    name: '.texts()',
+
+    init: function () {
+        Y.one('body').append('<iframe src="assets/search1.html"></iframe>');
+    },
+
+    destroy: function () {
+        Y.all('iframe').remove();
+    },
+
+    'should return an array of matching texts': function () {
+        this.wait(function () {
+            var texts = window.frames[0].type3('foo').texts();
+            Y.ArrayAssert.itemsAreSame(texts, [ 'foo_1', 'foo_2', 'foo_3', 'foo_4' ]);
+        }, 100);
+    }
+}));
+
 Y.Test.Runner.add(suite);
 
 });
