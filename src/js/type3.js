@@ -94,6 +94,7 @@ function type3(text) {
         throw new TypeError('type3: text is empty');
     }
 
+    this._text      = text;
     this._textnodes = find_textnodes(text, document.documentElement);
 }
 
@@ -121,6 +122,42 @@ type3.prototype = {
         return array_map(this._textnodes, function (textnode) {
             return textnode.textContent;
         });
+    },
+
+    /**
+     * Wraps all matches in text nodes.
+     *
+     * @for type3
+     * @method wrap
+     * @param wrapper {String}
+     * @chainable
+     */
+    wrap: function (wrapper) {
+
+        var text = this._text;
+
+        function extract_text(textnode) {
+            textnode.splitText( textnode.textContent.indexOf(text) );
+            textnode.nextSibling.splitText( text.length );
+            return textnode.nextSibling;
+        }
+
+        function wrap_text(textnode) {
+            var outer = document.createElement('div');
+            outer.innerHTML = wrapper.replace('{text}', text);
+            textnode.parentNode.replaceChild(outer.firstChild, textnode);
+            return get_textnodes(outer)[0];
+        }
+
+        if (typeof wrapper !== 'string') {
+            throw new TypeError('type3: wrapper is not a string');
+        }
+
+        this._textnodes = array_map(this._textnodes, function (textnode) {
+            return wrap_text( extract_text(textnode) );
+        });
+
+        return this;
     }
 };
 

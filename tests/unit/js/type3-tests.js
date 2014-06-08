@@ -102,6 +102,52 @@ suite.add(new Y.Test.Case({
     }
 }));
 
+suite.add(new Y.Test.Case({
+
+    name: '.wrap(wrapper)',
+
+    init: function () {
+        this.removeIframe();
+    },
+
+    tearDown: function () {
+        this.removeIframe();
+    },
+
+    dropIframe: function () {
+        Y.one('body').append('<iframe src="assets/wrap-tests.html"></iframe>');
+        return new Y.Promise(function (resolve) {
+            Y.later(150, null, function () {
+                resolve(window.frames[0]);
+            });
+        });
+    },
+
+    removeIframe: function () {
+        Y.all('iframe').remove();
+    },
+
+    'should throw if wrapper is not a string': function () {
+        Y.Assert.throwsError(TypeError, function () {
+            type3('xxx').wrap([]);
+        });
+    },
+
+    'should wrap a text with html': function () {
+
+        var test = this;
+
+        this.dropIframe().then(function (frm) {
+            test.resume(function () {
+                frm.type3('bar').wrap('<strong id="wrapped1">{text}</strong>');
+                Y.Assert.isNotNull( Y.one(frm.document).one('#wrapped1') );
+            });
+        });
+
+        this.wait();
+    }
+}))
+
 Y.Test.Runner.add(suite);
 
 });
