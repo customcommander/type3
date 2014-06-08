@@ -66,6 +66,42 @@ suite.add(new Y.Test.Case({
     }
 }));
 
+suite.add(new Y.Test.Case({
+
+    name: '.nodes()',
+
+    init: function () {
+        Y.all('iframe').remove();
+    },
+
+    setUp: function () {
+        Y.one('body').append('<iframe src="assets/search2.html"></iframe>');
+    },
+
+    tearDown: function () {
+        Y.all('iframe').remove();
+    },
+
+    'should return an array of matching text nodes': function () {
+        this.wait(function () {
+            var nodes = window.frames[0].type3('foo').nodes();
+            Y.ArrayAssert.itemsAreSame(nodes, [
+                window.frames[0].document.getElementById('txt1').firstChild,
+                window.frames[0].document.getElementById('txt2').firstChild,
+                window.frames[0].document.getElementById('txt3').firstChild,
+                window.frames[0].document.getElementById('txt4').firstChild,
+                window.frames[0].document.getElementById('txt5').firstChild
+            ]);
+        }, 100);
+    },
+
+    'should return null if there is no match': function () {
+        this.wait(function () {
+            Y.Assert.isNull(window.frames[0].type3('unknown').nodes());
+        }, 100);
+    }
+}));
+
 Y.Test.Runner.add(suite);
 
 });
