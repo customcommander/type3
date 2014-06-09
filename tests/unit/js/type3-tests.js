@@ -214,6 +214,21 @@ suite.add(new Y.Test.Case({
         });
 
         this.wait();
+    },
+
+    'should wrap a text with a string': function () {
+
+        var test = this;
+
+        dropIframe('assets/wrap-tests.html').then(function (frm) {
+            test.resume(function () {
+                var scope = frm.document.getElementById('text2');
+                frm.type3('world', scope).wrap('@@{text}@@');
+                Y.Assert.areSame('hello @@world@@', scope.textContent);
+            });
+        });
+
+        this.wait();
     }
 }))
 
