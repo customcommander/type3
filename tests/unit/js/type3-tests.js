@@ -79,6 +79,12 @@ suite.add(new Y.Test.Case({
         Y.Assert.throwsError(TypeError, function () {
             type3('');
         }, 'expected failure because text is an empty string ("")');
+    },
+
+    'type3(text, scope) - should throw an error if scope is not a node': function () {
+        Y.Assert.throwsError(TypeError, function () {
+            type3('foo', {});
+        });
     }
 }));
 
@@ -121,7 +127,7 @@ suite.add(new Y.Test.Case({
         removeIframes();
     },
 
-    'should return an array of matching text nodes': function () {
+    'if a scope is not given, returns all matching text nodes': function () {
 
         var test = this;
 
@@ -134,6 +140,25 @@ suite.add(new Y.Test.Case({
                     frm.document.getElementById('txt3').firstChild,
                     frm.document.getElementById('txt4').firstChild,
                     frm.document.getElementById('txt5').firstChild,
+                    frm.document.getElementById('txt6').firstChild,
+                    frm.document.getElementById('txt7').firstChild,
+                    frm.document.getElementById('txt8').firstChild,
+                    frm.document.getElementById('txt9').firstChild
+                ]);
+            });
+        });
+
+        this.wait();
+    },
+
+    'if a scope is given, returns the matching text nodes within that scope only': function () {
+
+        var test = this;
+
+        dropIframe('assets/nodes-tests.html').then(function (frm) {
+            test.resume(function () {
+                var nodes = frm.type3('foo', frm.document.getElementById('txtset2')).nodes();
+                Y.ArrayAssert.itemsAreSame(nodes, [
                     frm.document.getElementById('txt6').firstChild,
                     frm.document.getElementById('txt7').firstChild,
                     frm.document.getElementById('txt8').firstChild,

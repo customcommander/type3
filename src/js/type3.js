@@ -82,10 +82,14 @@ function find_textnodes(text, node) {
  * @constructor
  * @param text {String} The string to look for in text nodes.
  */
-function type3(text) {
+function type3(text, scope) {
 
     if ( !(this instanceof type3) ) {
-        return new type3(text);
+        if (arguments.length === 1) {
+            return new type3(text);
+        } else {
+            return new type3(text, scope);
+        }
     }
 
     if (typeof text !== 'string') {
@@ -94,8 +98,16 @@ function type3(text) {
         throw new TypeError('type3: text is empty');
     }
 
+    if ( arguments.length > 1 && ( !(scope instanceof Node) || scope.nodeType !== Node.ELEMENT_NODE) ) {
+        throw new TypeError('type3: scope is not an element node');
+    }
+
+    if (!scope) {
+        scope = document.documentElement;
+    }
+
     this._text      = text;
-    this._textnodes = find_textnodes(text, document.documentElement);
+    this._textnodes = find_textnodes(text, scope);
 }
 
 type3.prototype = {
