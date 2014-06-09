@@ -229,6 +229,38 @@ suite.add(new Y.Test.Case({
         });
 
         this.wait();
+    },
+
+    'should be able to wrap multiple matches within a text node': function () {
+
+        var test = this;
+
+        dropIframe('assets/wrap-tests.html').then(function (frm) {
+            test.resume(function () {
+                var scope = frm.document.getElementById('text3');
+                frm.type3('bbb', scope).wrap('<b class="multi">{text}</b>');
+                Y.Assert.areSame(2, Y.one(scope).all('.multi').size());
+            });
+        });
+
+        this.wait();
+    },
+
+    'multiple matches should update the return value of nodes()': function () {
+
+        var test = this;
+
+        dropIframe('assets/wrap-tests.html').then(function (frm) {
+            test.resume(function () {
+                var scope = frm.document.getElementById('text3');
+                var search = frm.type3('bbb', scope);
+                var nodes1 = search.nodes();                       // only one text node with two occurences
+                var nodes2 = search.wrap('<b>{text}</b>').nodes(); // two text nodes with one occurence each
+                Y.Assert.areNotSame(nodes1.length, nodes2.length);
+            });
+        });
+
+        this.wait();
     }
 }))
 

@@ -143,28 +143,44 @@ type3.prototype = {
      */
     wrap: function (wrapper) {
 
+        var i;
         var text = this._text;
-
-        function extract_text(textnode) {
-            textnode.splitText( textnode.textContent.indexOf(text) );
-            textnode.nextSibling.splitText( text.length );
-            return textnode.nextSibling;
-        }
-
-        function wrap_text(textnode) {
-            var outer = document.createElement('div');
-            outer.innerHTML = wrapper.replace('{text}', text);
-            textnode.parentNode.replaceChild(outer.firstChild, textnode);
-            return get_textnodes(outer)[0];
-        }
+        var textnode;
+        var wrapper_node;
+        var new_node;
+        var old_node;
+        var parent;
+        var new_textnodes = [];
 
         if (typeof wrapper !== 'string') {
             throw new TypeError('type3: wrapper is not a string');
         }
 
-        this._textnodes = array_map(this._textnodes, function (textnode) {
-            return wrap_text( extract_text(textnode) );
-        });
+        wrapper_node = document.createElement('div');
+        wrapper_node.innerHTML = wrapper.replace('{text}', text);
+        wrapper_node = wrapper_node.firstChild;
+
+        for ( i = 0; i < this._textnodes.length; i++ ) {
+
+            textnode = this._textnodes[i];
+            parent   = textnode.parentNode;
+            index    = textnode.textContent.indexOf( text );
+
+            while ( index > -1 ) {
+                textnode.splitText( index );
+                textnode.nextSibling.splitText( text.length );
+                old_node = textnode.nextSibling;
+                new_node = wrapper_node.cloneNode(true);
+                parent.replaceChild(new_node, old_node);
+                textnode = new_node.nextSibling;
+                index = textnode.textContent.indexOf( text );
+                new_textnodes.push( get_textnodes(new_node)[0] );
+            }
+
+            parent.normalize();
+        }
+
+        this._textnodes = new_textnodes;
 
         return this;
     }
