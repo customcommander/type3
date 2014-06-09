@@ -133,7 +133,11 @@ suite.add(new Y.Test.Case({
                     frm.document.getElementById('txt2').firstChild,
                     frm.document.getElementById('txt3').firstChild,
                     frm.document.getElementById('txt4').firstChild,
-                    frm.document.getElementById('txt5').firstChild
+                    frm.document.getElementById('txt5').firstChild,
+                    frm.document.getElementById('txt6').firstChild,
+                    frm.document.getElementById('txt7').firstChild,
+                    frm.document.getElementById('txt8').firstChild,
+                    frm.document.getElementById('txt9').firstChild
                 ]);
             });
         });
