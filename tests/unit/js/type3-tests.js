@@ -75,7 +75,7 @@ suite.add(new Y.Test.Case({
     },
 
     setUp: function () {
-        Y.one('body').append('<iframe src="assets/search2.html"></iframe>');
+        Y.one('body').append('<iframe src="assets/nodes-tests.html"></iframe>');
     },
 
     tearDown: function () {
