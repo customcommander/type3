@@ -85,11 +85,7 @@ function find_textnodes(text, node) {
 function type3(text, scope) {
 
     if ( !(this instanceof type3) ) {
-        if (arguments.length === 1) {
-            return new type3(text);
-        } else {
-            return new type3(text, scope);
-        }
+        return new type3(text, scope);
     }
 
     if (typeof text !== 'string') {
@@ -98,7 +94,8 @@ function type3(text, scope) {
         throw new TypeError('type3: text is empty');
     }
 
-    if ( arguments.length > 1 && ( !(scope instanceof Node) || scope.nodeType !== Node.ELEMENT_NODE) ) {
+    if ( typeof scope !== 'undefined' &&
+        ( !(scope instanceof Node) || scope.nodeType !== Node.ELEMENT_NODE) ) {
         throw new TypeError('type3: scope is not an element node');
     }
 
