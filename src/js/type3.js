@@ -51,7 +51,7 @@ var
  * @return {Text[]}
  */
 function get_textnodes(node) {
-    var i, textnodes = [];
+    var textnodes = [];
     array_each(arrayify(node.childNodes), function (child) {
         if ( child.nodeType === Node.ELEMENT_NODE ) {
             textnodes = textnodes.concat( get_textnodes(child) );
@@ -71,7 +71,7 @@ function get_textnodes(node) {
  * @return {Text[]}
  */
 function find_textnodes(text, node) {
-    var i, textnodes = get_textnodes(node);
+    var textnodes = get_textnodes(node);
     return array_filter(textnodes, function (textnode) {
         return textnode.textContent.indexOf(text) > -1;
     });
