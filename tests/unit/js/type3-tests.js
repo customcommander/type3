@@ -193,7 +193,7 @@ suite.add(new Y.Test.Case({
     },
 
     tearDown: function () {
-        // removeIframes();
+        removeIframes();
     },
 
     'should throw if wrapper is not a string': function () {
