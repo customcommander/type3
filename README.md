@@ -9,6 +9,7 @@ in your DOM tree.
 ```
 
 ```javascript
+// Finds all occurences of 'World' and wrap them within some html
 type3('World').wrap('<b>{text}</b>');
 ```
 
