@@ -193,7 +193,7 @@ suite.add(new Y.Test.Case({
     },
 
     tearDown: function () {
-        removeIframes();
+        // removeIframes();
     },
 
     'should throw if wrapper is not a string': function () {
@@ -257,6 +257,28 @@ suite.add(new Y.Test.Case({
                 var nodes1 = search.nodes();                       // only one text node with two occurences
                 var nodes2 = search.wrap('<b>{text}</b>').nodes(); // two text nodes with one occurence each
                 Y.Assert.areNotSame(nodes1.length, nodes2.length);
+            });
+        });
+
+        this.wait();
+    },
+
+    'test multiple matches on a node with mixed types children': function () {
+
+        var test = this;
+
+        dropIframe('assets/wrap-tests.html').then(function (frm) {
+            test.resume(function () {
+                var scope = frm.document.getElementById('text4');
+                var child;
+
+                frm.type3('bar', scope).wrap('<b class="bar">{text}</b>');
+
+                Y.Assert.isTrue(/^\s+foo\s+bar\s+foo\s+bar\s+bar\s+$/.test(scope.textContent),
+                    'node text should not have changed');
+
+                Y.Assert.areSame(3, Y.one(scope).all('.bar').size(),
+                    'expected all "bar" occurences to have been properly wrapped');
             });
         });
 

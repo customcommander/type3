@@ -78,6 +78,49 @@ function find_textnodes(text, node) {
 }
 
 /**
+ * Breaks a text node into small chunks so that each occurence of `str` is
+ * contained in its own text node.
+ *
+ * @example
+ *     // Before:
+ *     // <p>
+ *     //     <TextNode>foo bar foo bar</TextNode>
+ *     // </p>
+ *
+ *     split_text(textnode, 'bar');
+ *
+ *     // After:
+ *     // <p>
+ *     //     <TextNode>foo </TextNode>
+ *     //     <TextNode>bar</TextNode>
+ *     //     <TextNode> foo </TextNode>
+ *     //     <TextNode>bar</TextNode>
+ *     // </p>
+ *
+ * @param txtn {Text} A text node to split
+ * @param str {String} A string within a text node
+ * @return {Text[]}
+ * @private
+ */
+function split_text(txtn, str) {
+
+    var ret = [];
+    var idx = txtn.textContent.indexOf( str );
+
+    while ( idx > -1 ) {
+        txtn.splitText( idx );
+        txtn.nextSibling.splitText( str.length );
+        ret.push( txtn );
+        ret.push( txtn.nextSibling );
+        ret.push( txtn.nextSibling.nextSibling );
+        txtn = txtn.nextSibling.nextSibling;
+        idx  = txtn.textContent.indexOf( str );
+    }
+
+    return ret;
+}
+
+/**
  * @class type3
  * @constructor
  * @param text {String} The string to look for in text nodes.
@@ -134,23 +177,29 @@ type3.prototype = {
     },
 
     /**
-     * Wraps all matches in text nodes.
+     * Wraps all occurences of a string.
+     *
+     * The wrapper can have a `{text}` placeholder that will be replaced with the string.
+     *
+     * @example
+     *     // Before:
+     *     // <p>Hello World</p>
+     * 
+     *     type3('World').wrap('<b>{text}</b>');
+     * 
+     *     // After:
+     *     // <p>Hello <b>World</b></p>
      *
      * @for type3
      * @method wrap
-     * @param wrapper {String}
+     * @param wrapper {String} e.g. '&lt;b&gt;{text}&lt;/b&gt;'
      * @chainable
      */
     wrap: function (wrapper) {
 
-        var i;
         var text = this._text;
-        var textnode;
-        var wrapper_node;
-        var new_node;
-        var old_node;
-        var parent;
         var new_textnodes = [];
+        var wrapper_node;
 
         if (typeof wrapper !== 'string') {
             throw new TypeError('type3: wrapper is not a string');
@@ -160,25 +209,23 @@ type3.prototype = {
         wrapper_node.innerHTML = wrapper.replace('{text}', text);
         wrapper_node = wrapper_node.firstChild;
 
-        for ( i = 0; i < this._textnodes.length; i++ ) {
+        array_each(this._textnodes, function (txtn) {
 
-            textnode = this._textnodes[i];
-            parent   = textnode.parentNode;
-            index    = textnode.textContent.indexOf( text );
+            var parent = txtn.parentNode,
+                to_wrap;
 
-            while ( index > -1 ) {
-                textnode.splitText( index );
-                textnode.nextSibling.splitText( text.length );
-                old_node = textnode.nextSibling;
-                new_node = wrapper_node.cloneNode(true);
-                parent.replaceChild(new_node, old_node);
-                textnode = new_node.nextSibling;
-                index = textnode.textContent.indexOf( text );
+            to_wrap = array_filter(split_text(txtn, text), function (txtn) {
+                return txtn.textContent === text;
+            });
+
+            array_each(to_wrap, function (txtn) {
+                var new_node = wrapper_node.cloneNode(true);
+                parent.replaceChild(new_node, txtn);
                 new_textnodes.push( get_textnodes(new_node)[0] );
-            }
+            });
 
             parent.normalize();
-        }
+        });
 
         this._textnodes = new_textnodes;
 
