@@ -284,7 +284,35 @@ suite.add(new Y.Test.Case({
 
         this.wait();
     }
-}))
+}));
+
+suite.add(new Y.Test.Case({
+
+    name: '.remove()',
+
+    setUp: function () {
+        removeIframes();
+    },
+
+    tearDown: function () {
+        removeIframes();
+    },
+
+    'should remove all occurences': function () {
+
+        var test = this;
+
+        dropIframe('assets/remove-tests.html').then(function (frm) {
+            test.resume(function () {
+                var para = frm.document.getElementById('para1');
+                frm.type3('foo').remove();
+                Y.Assert.isTrue( para.textContent.indexOf('foo') < 0 );
+            });
+        });
+
+        this.wait();
+    },
+}));
 
 Y.Test.Runner.add(suite);
 

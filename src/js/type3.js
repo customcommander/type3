@@ -230,6 +230,48 @@ type3.prototype = {
         this._textnodes = new_textnodes;
 
         return this;
+    },
+
+    /**
+     * Removes all occurences of a string.
+     *
+     * @example
+     *     // Before:
+     *     // <p>
+     *     //     foo
+     *     //     <span>foo bar</span>
+     *     // </p>
+     *
+     *     type3('foo').remove();
+     *
+     *     // After:
+     *     // <p>
+     *     //     <span> bar</span>
+     *     // </p>
+     *
+     * @for type3
+     * @method remove
+     */
+    remove: function () {
+
+        var txt = this._text;
+
+        array_each(this._textnodes, function (txtn) {
+
+            var del, parent = txtn.parentNode;
+
+            del = array_filter(split_text(txtn, txt), function (txtn) {
+                return txtn.textContent === txt;
+            });
+
+            array_each(del, function (txtn) {
+                parent.removeChild(txtn);
+            });
+
+            parent.normalize();
+        });
+
+        delete this._textnodes;
     }
 };
 
