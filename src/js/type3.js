@@ -308,12 +308,10 @@ type3.prototype = {
      * @for type3
      * @method replace
      * @param substitute {String} The string to use as a substitution for all occurences.
-     * @chainable
      */
     replace: function (substitute) {
 
-        var txt      = this._text;
-        var txtnodes = [];
+        var txt = this._text;
         var substitute_node;
 
         if (typeof substitute !== 'string') {
@@ -341,15 +339,12 @@ type3.prototype = {
             array_each(repl, function (txtn) {
                 var new_txtn = substitute_node.cloneNode(true);
                 parent.replaceChild(new_txtn, txtn);
-                txtnodes.push(new_txtn);
             });
 
             parent.normalize();
         });
 
-        this._textnodes = txtnodes;
-
-        return this._textnodes;
+        this._textnodes = [];
     }
 };
 
