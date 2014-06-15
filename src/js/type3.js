@@ -272,6 +272,73 @@ type3.prototype = {
         });
 
         delete this._textnodes;
+    },
+
+    /**
+     * Replaces all occurences with given substitution string.
+     *
+     * @example
+     *     // Before:
+     *     // <p>
+     *     //     xxx
+     *     //     <span>xxx bar</span>
+     *     //     xxx
+     *     // </p>
+     *
+     *     type3('xxx').replace('foo');
+     *
+     *     // After:
+     *     // <p>
+     *     //     foo
+     *     //     <span>foo bar</span>
+     *     //     foo
+     *     // </p>
+     *
+     * @for type3
+     * @method replace
+     * @param substitute {String} The string to use as a substitution for all occurences.
+     * @chainable
+     */
+    replace: function (substitute) {
+
+        var txt      = this._text;
+        var txtnodes = [];
+        var substitute_node;
+
+        if (typeof substitute !== 'string') {
+            throw new TypeError('type3.replace(): substitute is not a string');
+        }
+
+        // .replace('') alias .remove()
+        if (!substitute) {
+            this.remove();
+            return;
+        }
+
+        substitute_node = document.createElement('div');
+        substitute_node.innerHTML = substitute;
+        substitute_node = substitute_node.firstChild;
+
+        array_each(this._textnodes, function (txtn) {
+
+            var repl, parent = txtn.parentNode;
+
+            repl = array_filter(split_text(txtn, txt), function (txtn) {
+                return txtn.textContent === txt;
+            });
+
+            array_each(repl, function (txtn) {
+                var new_txtn = substitute_node.cloneNode(true);
+                parent.replaceChild(new_txtn, txtn);
+                txtnodes.push(new_txtn);
+            });
+
+            parent.normalize();
+        });
+
+        this._textnodes = txtnodes;
+
+        return this._textnodes;
     }
 };
 

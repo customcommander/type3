@@ -311,7 +311,105 @@ suite.add(new Y.Test.Case({
         });
 
         this.wait();
+    }
+}));
+
+suite.add(new Y.Test.Case({
+
+    name: '.replace(substitute)',
+
+    setUp: function () {
+        removeIframes();
     },
+
+    tearDown: function () {
+        removeIframes();
+    },
+
+    'throws an error if substitute is not a string': function () {
+        Y.Assert.throwsError(TypeError, function () {
+            type3('foo').replace([]);
+        });
+    },
+
+    'should replace all occurences with a string': function () {
+
+        var test = this;
+
+        dropIframe('assets/replace-tests.html').then(function (frm) {
+            test.resume(function () {
+                var para   = Y.one(frm.document).one('#text1');
+                var re_txt = new RegExp(
+                        '\^' +
+                        '\\s+bar xxx xxx xxx xxx xxx xxx' +
+                        '\\s+xxx bar xxx xxx xxx xxx xxx' +
+                        '\\s+xxx xxx bar xxx xxx xxx xxx' +
+                        '\\s+xxx xxx xxx bar xxx xxx xxx' +
+                        '\\s+xxx xxx xxx xxx bar xxx xxx' +
+                        '\\s+xxx xxx xxx xxx xxx bar xxx' +
+                        '\\s+xxx xxx xxx xxx xxx xxx bar' +
+                        '\\s+\$'
+                    );
+                frm.type3('foo').replace('bar');
+                Y.Assert.isTrue( re_txt.test( para.get('text') ) );
+            });
+        });
+
+        this.wait();
+    },
+
+    'should replace all occurences with some html': function () {
+
+        var test = this;
+
+        dropIframe('assets/replace-tests.html').then(function (frm) {
+            test.resume(function () {
+                var para = Y.one(frm.document).one('#text1');
+                var re_txt = new RegExp(
+                        '\^' +
+                        '\\s+<b>bar</b> xxx xxx xxx xxx xxx xxx' +
+                        '\\s+xxx <b>bar</b> xxx xxx xxx xxx xxx' +
+                        '\\s+xxx xxx <b>bar</b> xxx xxx xxx xxx' +
+                        '\\s+xxx xxx xxx <b>bar</b> xxx xxx xxx' +
+                        '\\s+xxx xxx xxx xxx <b>bar</b> xxx xxx' +
+                        '\\s+xxx xxx xxx xxx xxx <b>bar</b> xxx' +
+                        '\\s+xxx xxx xxx xxx xxx xxx <b>bar</b>' +
+                        '\\s+\$'
+                    );
+                frm.type3('foo').replace('<b>bar</b>');
+                Y.Assert.isTrue( re_txt.test( para.get('innerHTML') ), 'expected a different innerHTML' );
+                Y.Assert.isTrue( 7 === para.all('b').size()          , 'expected 7 <b> nodes' );
+            });
+        });
+
+        this.wait();
+    },
+
+    'should delete all occurences if substitute is an empty string': function () {
+
+        var test = this;
+
+        dropIframe('assets/replace-tests.html').then(function (frm) {
+            test.resume(function () {
+                var para       = Y.one(frm.document).one('#text1');
+                var re_content = new RegExp(
+                        '\^' +
+                        '\\s+ xxx xxx xxx xxx xxx xxx' +
+                        '\\s+xxx  xxx xxx xxx xxx xxx' +
+                        '\\s+xxx xxx  xxx xxx xxx xxx' +
+                        '\\s+xxx xxx xxx  xxx xxx xxx' +
+                        '\\s+xxx xxx xxx xxx  xxx xxx' +
+                        '\\s+xxx xxx xxx xxx xxx  xxx' +
+                        '\\s+xxx xxx xxx xxx xxx xxx ' +
+                        '\\s+\$'
+                    );
+                    frm.type3('foo').replace('');
+                    Y.Assert.isTrue( re_content.test( para.get('text') ) );
+            });
+        });
+
+        this.wait();
+    }
 }));
 
 Y.Test.Runner.add(suite);
