@@ -177,6 +177,17 @@ type3.prototype = {
     },
 
     /**
+     * Returns the number of occurences.
+     *
+     * @for type3
+     * @method count
+     * @return {Number}
+     */
+    count: function () {
+        return this._textnodes.length;
+    },
+
+    /**
      * Wraps all occurences of a string.
      *
      * The wrapper can have a `{text}` placeholder that will be replaced with the string.

@@ -412,6 +412,37 @@ suite.add(new Y.Test.Case({
     }
 }));
 
+suite.add(new Y.Test.Case({
+
+    name: '.count()',
+
+    'returns the number of occurences': function () {
+
+        var test = this;
+
+        dropIframe('assets/count-tests.html').then(function (frm) {
+            test.resume(function () {
+                Y.Assert.areSame(19, frm.type3('foo').count());
+            });
+        });
+
+        this.wait();
+    },
+
+    'returns 0 if not found': function () {
+
+        var test = this;
+
+        dropIframe('assets/count-tests.html').then(function (frm) {
+            test.resume(function () {
+                Y.Assert.areSame(0, frm.type3('not_found').count());
+            });
+        });
+
+        this.wait();
+    }
+}));
+
 Y.Test.Runner.add(suite);
 
 });
