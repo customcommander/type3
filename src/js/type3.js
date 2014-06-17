@@ -292,7 +292,7 @@ type3.prototype = {
 
         });
 
-        delete this._textnodes;
+        this._textnodes = [];
     },
 
     /**
