@@ -157,14 +157,14 @@ function type3(text, scope) {
     }
 
     if (typeof text !== 'string') {
-        throw new TypeError('type3: text is not a string');
+        throw new TypeError('type3(): text is not a string');
     } else if (!text) {
-        throw new TypeError('type3: text is empty');
+        throw new TypeError('type3(): text is empty');
     }
 
     if ( typeof scope !== 'undefined' &&
         ( !(scope instanceof Node) || scope.nodeType !== Node.ELEMENT_NODE) ) {
-        throw new TypeError('type3: scope is not an element node');
+        throw new TypeError('type3(): scope is not an element node');
     }
 
     if (!scope) {
@@ -238,7 +238,7 @@ type3.prototype = {
         var wrapper_node;
 
         if (typeof wrapper !== 'string') {
-            throw new TypeError('type3: wrapper is not a string');
+            throw new TypeError('type3.wrap(): wrapper is not a string');
         }
 
         wrapper_node = document.createElement('div');
