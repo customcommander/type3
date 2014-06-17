@@ -121,6 +121,31 @@ function split_text(txtn, str) {
 }
 
 /**
+ * Executes a function on each occurence of `str` in a text node.
+ *
+ * @param txtn {Text}
+ * @param str {String} A string to look for.
+ * @param fn {Function} A callback function. 1st param is the match, 2nd the parent node of the match.
+ * @param [args] {Array} Additional parameters to pass on to the callback function.
+ */
+function match_exec(txtn, str, fn, args) {
+
+    var matches, parent = txtn.parentNode;
+
+    args = args || [];
+
+    matches = array_filter(split_text(txtn, str), function (part) {
+        return part.textContent === str;
+    });
+
+    array_each(matches, function (match) {
+        fn.apply(null, [].concat( match, match.parentNode, args ));
+    });
+
+    parent.normalize();
+}
+
+/**
  * @class type3
  * @constructor
  * @param text {String} The string to look for in text nodes.
@@ -222,20 +247,12 @@ type3.prototype = {
 
         array_each(this._textnodes, function (txtn) {
 
-            var parent = txtn.parentNode,
-                to_wrap;
+            match_exec(txtn, text, function (match, parent, wrapper) {
+                wrapper = wrapper.cloneNode(true);
+                parent.replaceChild(wrapper, match);
+                new_textnodes.push( get_textnodes(wrapper)[0] );
+            }, [ wrapper_node ]);
 
-            to_wrap = array_filter(split_text(txtn, text), function (txtn) {
-                return txtn.textContent === text;
-            });
-
-            array_each(to_wrap, function (txtn) {
-                var new_node = wrapper_node.cloneNode(true);
-                parent.replaceChild(new_node, txtn);
-                new_textnodes.push( get_textnodes(new_node)[0] );
-            });
-
-            parent.normalize();
         });
 
         this._textnodes = new_textnodes;
@@ -269,17 +286,10 @@ type3.prototype = {
 
         array_each(this._textnodes, function (txtn) {
 
-            var del, parent = txtn.parentNode;
-
-            del = array_filter(split_text(txtn, txt), function (txtn) {
-                return txtn.textContent === txt;
+            match_exec(txtn, txt, function (match, parent) {
+                parent.removeChild(match);
             });
 
-            array_each(del, function (txtn) {
-                parent.removeChild(txtn);
-            });
-
-            parent.normalize();
         });
 
         delete this._textnodes;
@@ -330,18 +340,11 @@ type3.prototype = {
 
         array_each(this._textnodes, function (txtn) {
 
-            var repl, parent = txtn.parentNode;
+            match_exec(txtn, txt, function (match, parent, replace) {
+                replace = replace.cloneNode(true);
+                parent.replaceChild(replace, match);
+            }, [ substitute_node ]);
 
-            repl = array_filter(split_text(txtn, txt), function (txtn) {
-                return txtn.textContent === txt;
-            });
-
-            array_each(repl, function (txtn) {
-                var new_txtn = substitute_node.cloneNode(true);
-                parent.replaceChild(new_txtn, txtn);
-            });
-
-            parent.normalize();
         });
 
         this._textnodes = [];
