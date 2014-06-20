@@ -20,13 +20,14 @@ function dropIframe(src) {
     );
 
     return new Y.Promise(function (resolve) {
-        Y.later(100, null, function () {
-            var i = 0, ifrm;
-            do {
-                ifrm = window.frames[i];
-                i++;
-            } while ( ifrm.name !== ifrm_name && i<window.frames.length );
-            resolve(ifrm);
+        Y.later(200, null, function () {
+            var i;
+            for ( i = 0; i < window.frames.length; i++ ) {
+                if ( window.frames[i].name === ifrm_name ) {
+                    resolve( window.frames[i] );
+                    break;
+                }
+            }
         });
     });
 }
