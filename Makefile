@@ -12,4 +12,4 @@ readme: apidocs
 	@cat build/docs/intro.md build/docs/api.md >build/docs/README.md
 	@cp build/docs/README.md README.md
 
-.PHONY: test apidocs
+.PHONY: test apidocs readme
