@@ -183,6 +183,7 @@ type3.prototype = {
      * @for type3
      * @method nodes
      * @return {Text[]} Matching text nodes or null if there is no match.
+     * @public
      */
     nodes: function () {
         return this._textnodes.length ? this._textnodes : null;
@@ -194,6 +195,7 @@ type3.prototype = {
      * @for type3
      * @method texts
      * @return {String[]}
+     * @public
      */
     texts: function () {
         return array_map(this._textnodes, function (textnode) {
@@ -219,6 +221,7 @@ type3.prototype = {
      * @for type3
      * @method count
      * @return {Number}
+     * @public
      */
     count: function () {
 
@@ -258,6 +261,7 @@ type3.prototype = {
      * @method wrap
      * @param wrapper {String} e.g. '&lt;b&gt;{text}&lt;/b&gt;'
      * @chainable
+     * @public
      */
     wrap: function (wrapper) {
 
@@ -307,6 +311,7 @@ type3.prototype = {
      *
      * @for type3
      * @method remove
+     * @public
      */
     remove: function () {
 
@@ -346,6 +351,7 @@ type3.prototype = {
      * @for type3
      * @method replace
      * @param substitute {String} The string to use as a substitution for all occurences.
+     * @public
      */
     replace: function (substitute) {
 
