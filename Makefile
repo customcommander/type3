@@ -1,5 +1,7 @@
 #!/bin/bash
 
+RELEASE_DIR=build/release
+
 test: minify
 	@grover tests/unit/testrunner.html
 
@@ -15,4 +17,11 @@ readme: apidocs
 	@cat build/docs/intro.md build/docs/api.md >build/docs/README.md
 	@cp build/docs/README.md README.md
 
-.PHONY: test minify apidocs readme
+release: minify readme
+	@test -d ${RELEASE_DIR} || mkdir ${RELEASE_DIR}
+	@rm -rf ${RELEASE_DIR}/*
+	@cp build/src/type3.min.js ${RELEASE_DIR}/
+	@cp build/docs/README.md ${RELEASE_DIR}/
+	@cd ${RELEASE_DIR}; zip -r type3.zip *
+
+.PHONY: test minify apidocs readme release
