@@ -182,7 +182,7 @@ type3.prototype = {
      *
      * @for type3
      * @method nodes
-     * @returns {Text[]} Matching text nodes or null if there is no match.
+     * @return {Text[]} Matching text nodes or null if there is no match.
      */
     nodes: function () {
         return this._textnodes.length ? this._textnodes : null;
