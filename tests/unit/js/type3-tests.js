@@ -423,7 +423,7 @@ suite.add(new Y.Test.Case({
 
         dropIframe('assets/count-tests.html').then(function (frm) {
             test.resume(function () {
-                Y.Assert.areSame(19, frm.type3('foo').count());
+                Y.Assert.areSame(18, frm.type3('foo').count());
             });
         });
 

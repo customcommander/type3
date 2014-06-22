@@ -202,14 +202,42 @@ type3.prototype = {
     },
 
     /**
-     * Returns the number of occurences.
+     * Returns the number of occurences in a set of matching texts.
+     *
+     * @example
+     *     // <p>
+     *     //     foobar
+     *     //     <strong>
+     *     //         <em>foobar foobar</em>
+     *     //     </strong>
+     *     //     foobar
+     *     // </p>
+     *
+     *     type3('foo').count();
+     *     //=> 4
      *
      * @for type3
      * @method count
      * @return {Number}
      */
     count: function () {
-        return this._textnodes.length;
+
+        var i   = 0,
+            txt = this._text;
+
+        array_each(this._textnodes, function (txtn) {
+
+            var content = txtn.textContent,
+                idx     = content.indexOf(txt);
+
+            while (idx > -1) {
+                i++;
+                content = content.substr(idx + txt.length);
+                idx     = content.indexOf(txt);
+            }
+        });
+
+        return i;
     },
 
     /**
