@@ -1,27 +1,32 @@
-#!/bin/bash
+NODE_BIN_DIR = ./node_modules/.bin
+ESLINT = $(NODE_BIN_DIR)/eslint
+KARMA = $(NODE_BIN_DIR)/karma
+UGLIFYJS = $(NODE_BIN_DIR)/uglifyjs
 
-RELEASE_DIR=build/release
+lib_js = lib/type3.js
+tests_js = tests/unit/type3-test.js
+all_js = $(lib_js) $(tests_js)
+lint_js = $(addprefix tmp/lint/,$(all_js:.js=.lint))
 
-test: minify
-	@grover tests/unit/testrunner.html
+all: $(lint_js) tmp/unit-test build/type3.min.js
 
-minify:
-	@uglifyjs --no-mange --no-squeeze src/js/type3.js >build/src/type3.min.js
+clean:
+	rm -rf tmp/
+	# touching lib/type3.js to force Make to remake build/type3.min.js
+	touch -m lib/type3.js
 
-apidocs:
-	@test -d build/tmp || mkdir build/tmp
-	@yuidoc -p -o build/tmp/ src/js/
-	@node build/scripts/process-yuidoc.js
+$(lint_js): tmp/lint/%.lint: %.js .eslintrc.json
+	mkdir -p $(dir $@)
+	$(ESLINT) $<
+	touch $@
 
-readme: apidocs
-	@cat build/docs/intro.md build/docs/api.md >build/docs/README.md
-	@cp build/docs/README.md README.md
+tmp/unit-test: $(all_js) karma.conf.js
+	mkdir -p $(dir $@)
+	$(KARMA) start --single-run
+	touch $@
 
-release: minify readme
-	@test -d ${RELEASE_DIR} || mkdir ${RELEASE_DIR}
-	@rm -rf ${RELEASE_DIR}/*
-	@cp build/src/type3.min.js ${RELEASE_DIR}/
-	@cp build/docs/README.md ${RELEASE_DIR}/
-	@cd ${RELEASE_DIR}; zip -r type3.zip *
+build/type3.min.js: lib/type3.js
+	mkdir -p $(dir $@)
+	$(UGLIFYJS) $< >$@
 
-.PHONY: test minify apidocs readme release
+.PHONY: all clean

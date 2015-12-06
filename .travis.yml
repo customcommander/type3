@@ -1,7 +1,9 @@
 language: node_js
 node_js:
-  - "0.10"
+  - "stable"
 env:
   global:
     - secure: D8HN7Se85Nehlqk03UKaoUX9l0oakYCJkBhJ/jXNYIiXKmP+xorltCBdsrUNisbSNJu4XsPdmNSWeHIXYz/PNUBdescqG/KeZHa209brso976pm/7JS4tQoBq/emz3kLCkYGxCBacSAv/I+Q4e1grSHunan3CGs0NMM57VY44RU=
     - secure: e4vFdtipWFkabEufOyb1IWgnm2/g8KOSsgVBe3PBTKdZN2kg65E1te6+mrh0FNuEWRtJWXXicyJx7ScYuDJb6wC2JiMhBJ4kiGUG8IrL6jucKFSR0Iq30vpOZNEHUAHGDkZOKNgJp3r53K0qrz1lMSsKr2AbyfLGh7JX4Nh2q5w=
+script:
+    - make

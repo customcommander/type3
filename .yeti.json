@@ -1,4 +1,0 @@
-{
-    "basedir": ".",
-    "glob": "tests/**/testrunner.html"
-}
