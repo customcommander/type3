@@ -149,4 +149,33 @@ describe('type3', function () {
         });
     });
 
+    describe('.queryTextParentAll()', function () {
+
+        it('should return an empty array if no text nodes match given text', function () {
+            expect(type3.queryTextParentAll(doc.body, 'unknown text')).to.deep.eq([]);
+            expect(type3.queryTextParentAll(doc.body, /unknown text/)).to.deep.eq([]);
+        });
+
+        it('should return an array of parents of matching text nodes', function () {
+            var expected = [];
+            expected.push(doc.body.querySelector('#xyz1'));
+            expected.push(doc.body.querySelector('#xyz2'));
+            expected.push(doc.body.querySelector('#xyz3'));
+            expect(type3.queryTextParentAll(doc.body, 'yyy')).to.deep.eq(expected);
+            expect(type3.queryTextParentAll(doc.body, /yyy/)).to.deep.eq(expected);
+        });
+
+        it('should throw if node is not an element', function () {
+            expect(function () {
+                type3.queryTextParentAll({ nodeType: 1 }, 'xxx');
+            }).to.throw(TypeError);
+        });
+
+        it('should throw if `txt` is neither a string nor a regular expression', function () {
+            expect(function () {
+                type3.queryTextParentAll(doc.body, []);
+            }).to.throw(TypeError);
+        });
+    });
+
 });
