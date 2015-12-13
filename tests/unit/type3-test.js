@@ -30,9 +30,9 @@ describe('type3', function () {
             '        <li>aaa bbb ccc</li>',
             '        <li>aaa bbb ccc</li>',
             '        <ul>',
-            '            <li>xxx yyy zzz</li>',
-            '            <li>xxx yyy zzz</li>',
-            '            <li>xxx yyy zzz</li>',
+            '            <li id="xyz1">xxx yyy zzz</li>',
+            '            <li id="xyz2">xxx yyy zzz</li>',
+            '            <li id="xyz3">xxx yyy zzz</li>',
             '        </ul>',
             '    </ul>',
             '</p>'
@@ -67,4 +67,31 @@ describe('type3', function () {
             }).to.throw(TypeError);
         });
     });
+
+    describe('.queryText()', function () {
+
+        it('should return null if a node does not contain given text', function () {
+            expect(type3.queryText(doc.body, 'unknown text')).to.be.null;
+            expect(type3.queryText(doc.body, /unknown text/)).to.be.null;
+        });
+
+        it('should return the first text node that matches given text', function () {
+            var expected = doc.body.querySelector('#xyz1').firstChild;
+            expect(type3.queryText(doc.body, 'yyy')).to.eq(expected);
+            expect(type3.queryText(doc.body, /yyy/)).to.eql(expected);
+        });
+
+        it('should throw if node is not an element', function () {
+            expect(function () {
+                type3.queryText({ nodeType: 1 }, 'xxx');
+            }).to.throw(TypeError);
+        });
+
+        it('should throw if `txt` is neither a string nor a regular expression', function () {
+            expect(function () {
+                type3.queryText(doc.body, []);
+            }).to.throw(TypeError);
+        });
+    });
+
 });
