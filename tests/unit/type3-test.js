@@ -94,4 +94,33 @@ describe('type3', function () {
         });
     });
 
+    describe('.queryTextAll()', function () {
+
+        it('should return an empty array if a node does not contain given text', function () {
+            expect(type3.queryTextAll(doc.body, 'unknown text')).to.deep.eq([]);
+            expect(type3.queryTextAll(doc.body, /unknown text/)).to.deep.eq([]);
+        });
+
+        it('should return an array of all text nodes matching given text', function () {
+            var expected = [];
+            expected.push( doc.body.querySelector('#xyz1').firstChild );
+            expected.push( doc.body.querySelector('#xyz2').firstChild );
+            expected.push( doc.body.querySelector('#xyz3').firstChild );
+            expect(type3.queryTextAll(doc.body, 'yyy')).to.deep.eq(expected);
+            expect(type3.queryTextAll(doc.body, /yyy/)).to.deep.eq(expected);
+        });
+
+        it('should throw if node is not an element', function () {
+            expect(function () {
+                type3.queryTextAll({ nodeType: 1 }, 'xxx');
+            }).to.throw(TypeError);
+        });
+
+        it('should throw if `txt` is neither a string nor a regular expression', function () {
+            expect(function () {
+                type3.queryTextAll(doc.body, []);
+            }).to.throw(TypeError);
+        });
+    });
+
 });
