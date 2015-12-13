@@ -123,4 +123,30 @@ describe('type3', function () {
         });
     });
 
+    describe('.queryTextParent()', function () {
+
+        it('should return null if no text nodes match given text', function () {
+            expect(type3.queryTextParent(doc.body, 'unknown text')).to.be.null;
+            expect(type3.queryTextParent(doc.body, /unknown text/)).to.be.null;
+        });
+
+        it('should return the parent of the first text node matching given text', function () {
+            var expected = doc.body.querySelector('#xyz1');
+            expect(type3.queryTextParent(doc.body, 'yyy')).to.eq(expected);
+            expect(type3.queryTextParent(doc.body, /yyy/)).to.eq(expected);
+        });
+
+        it('should throw if node is not an element', function () {
+            expect(function () {
+                type3.queryTextParent({ nodeType: 1 }, 'xxx');
+            }).to.throw(TypeError);
+        });
+
+        it('should throw if `txt` is neither a string nor a regular expression', function () {
+            expect(function () {
+                type3.queryTextParent(doc.body, []);
+            }).to.throw(TypeError);
+        });
+    });
+
 });
